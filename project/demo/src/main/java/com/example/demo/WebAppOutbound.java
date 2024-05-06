@@ -22,4 +22,14 @@ public class WebAppOutbound {
     public interface PubsubOutboundGateway {
         void sendToPubsub(String text);
     }
+
+    @Bean
+    @ServiceActivator(inputChannel = "pubsubOutputResultChannel")
+    public MessageHandler resultSender(PubSubTemplate pubsubTemplate) {
+        return new PubSubMessageHandler(pubsubTemplate, "projects/aravindblog/topics/Results");
+    }
+    @MessagingGateway(defaultRequestChannel = "pubsubOutputResultChannel")
+    public interface PubsubOutboundResultGateway {
+        void sendToPubsub(String text);
+    }
 }

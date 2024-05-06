@@ -6,10 +6,7 @@ import com.example.demo.service.ElectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -32,5 +29,11 @@ public class WebAppOutboundController {
         messagingGateway.sendToPubsub(message.toString());
         electionService.addElection(message);
         System.out.println("Successfully send message to outbound channels ");
+    }
+
+    @GetMapping("/results")
+    public void sendResults(){
+        electionService.publishResults();
+        System.out.println("Successfully send results to outbound channel ");
     }
 }

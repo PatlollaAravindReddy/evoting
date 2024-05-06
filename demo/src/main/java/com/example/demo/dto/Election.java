@@ -7,8 +7,6 @@ import java.util.List;
 @Data
 public class Election {
 
-
-
     private int id;
 
     private String title;

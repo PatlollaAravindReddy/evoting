@@ -18,6 +18,7 @@ public class ElectionService {
 
     private final WebAppOutbound.PubsubOutboundGateway messagingGateway;
 
+    private final WebAppOutbound.PubsubOutboundResultGateway resultGateway;
 
 //    @Autowired
 //    @Qualifier("createResultsDirectory")
@@ -28,13 +29,15 @@ public class ElectionService {
     private HashMap<Integer, Election> electionDirectory;
 
 
-    public ElectionService(WebAppOutbound.PubsubOutboundGateway messagingGateway) {
+    public ElectionService(WebAppOutbound.PubsubOutboundGateway messagingGateway,
+                           WebAppOutbound.PubsubOutboundResultGateway resultGateway) {
         this.messagingGateway = messagingGateway;
+        this.resultGateway = resultGateway;
         this.electionDirectory = new HashMap<>();
         this.electionResults = new HashMap<>();
     }
 
-    public void sendResults(String message) {
+    public void updateResults(String message) {
         ObjectMapper objectMapper = new ObjectMapper();
         VoteMessage voteMessage;
         try {
@@ -52,7 +55,6 @@ public class ElectionService {
             electionResults.setResults(new HashMap<>());
             electionResults.getResults().put(voteMessage.getChoice(),  1);
 
-            System.out.println(electionResults);
             this.electionResults.put(election.getId(), electionResults);
         } else {
 
@@ -62,6 +64,9 @@ public class ElectionService {
         System.out.println(this.electionResults);
     }
 
+    public void publishResults() {
+        resultGateway.sendToPubsub(this.electionResults.toString());
+    }
     public void addElection(Election message) {
         this.electionDirectory.put(message.getId(), message);
     }

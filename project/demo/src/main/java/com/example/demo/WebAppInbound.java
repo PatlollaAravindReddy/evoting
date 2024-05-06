@@ -56,7 +56,7 @@ public class WebAppInbound {
 
             originalMessage.ack();
 
-            electionService.sendResults(payload);
+            electionService.updateResults(payload);
         };
     }
 

@@ -15,7 +15,7 @@ public class WebAppOutbound {
     @Bean
     @ServiceActivator(inputChannel = "pubsubOutputChannel")
     public MessageHandler messageSender(PubSubTemplate pubsubTemplate) {
-        return new PubSubMessageHandler(pubsubTemplate, pubSubConfiguration.getTopic());
+        return new PubSubMessageHandler(pubsubTemplate, "projects/aravindblog/topics/votes");
     }
     @MessagingGateway(defaultRequestChannel = "pubsubOutputChannel")
     public interface PubsubOutboundGateway {

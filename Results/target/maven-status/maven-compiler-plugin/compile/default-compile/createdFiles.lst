@@ -1,0 +1,5 @@
+com\example\demo\WebAppOutbound.class
+com\example\demo\WebAppInbound.class
+com\example\demo\WebAppOutbound$PubsubOutboundGateway.class
+com\example\demo\VoterApplication.class
+com\example\demo\WebAppOutboundController.class
