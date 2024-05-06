@@ -25,15 +25,15 @@ public class WebAppOutboundController {
     }
 
     @PostMapping("/")
-    public void sendMessage(@RequestBody Election message){
+    public void sendMessage(@RequestBody Election message) {
         messagingGateway.sendToPubsub(message.toString());
         electionService.addElection(message);
         System.out.println("Successfully send message to outbound channels ");
     }
 
-    @GetMapping("/results")
-    public void sendResults(){
-        electionService.publishResults();
+    @GetMapping("/results/{electionId}")
+    public void sendResults(@PathVariable int electionId) {
+        electionService.publishResults(electionId);
         System.out.println("Successfully send results to outbound channel ");
     }
 }

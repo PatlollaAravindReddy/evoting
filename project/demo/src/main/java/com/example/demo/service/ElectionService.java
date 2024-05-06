@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @Service
 
@@ -64,9 +65,35 @@ public class ElectionService {
         System.out.println(this.electionResults);
     }
 
-    public void publishResults() {
-        resultGateway.sendToPubsub(this.electionResults.toString());
+    public void publishResults(int electionId) {
+        ElectionResults election = this.electionResults.get(electionId);
+        if(election != null) {
+            String winner = "--No Results--";
+            if (!election.getResults().isEmpty()) {
+                winner = findWinner(election.getResults());
+            }
+            ElectionResults results = this.electionResults.get(electionId);
+            results.setWinner(winner);
+            this.electionResults.put(electionId, results);
+            resultGateway.sendToPubsub(results.toString());
+        } else {
+            System.out.println("Election is not found with id: "+ electionId);
+        }
     }
+
+    private String findWinner(HashMap<String, Integer> list) {
+        int maxValue = Integer.MIN_VALUE;
+        String result = "--Draw--";
+        for (Map.Entry<String, Integer> entry : list.entrySet()) {
+            int value = entry.getValue();
+            if (value > maxValue) {
+                maxValue = value;
+                result = entry.getKey();
+            }
+        }
+        return result;
+    }
+
     public void addElection(Election message) {
         this.electionDirectory.put(message.getId(), message);
     }
